@@ -1,4 +1,8 @@
-package com.ChallengeBackend.challenge.Entidades;
+package com.ChallengeBackend.challenge.Entidades.Subclases;
+
+import com.ChallengeBackend.challenge.Entidades.Curso;
+import com.ChallengeBackend.challenge.Entidades.Enums.Horario;
+import com.ChallengeBackend.challenge.Entidades.Superclase.Persona;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Profesor extends Persona{
+public class Profesor extends Persona {
     private Horario turnoClases;
     @ManyToOne(fetch = FetchType.EAGER)
     private Administrador administrador;
@@ -16,10 +20,9 @@ public class Profesor extends Persona{
     private Set<Curso> cursos = new HashSet<>();
 
 
-    public Profesor(String nombre, String apellido, String email, String contrasena, String imagen, Horario turnoClases, Set<Curso> cursos) {
-        super(nombre, apellido, email, contrasena, imagen);
+    public Profesor(String nombre, String apellido, String email, String contrasena, String imagen, Horario turnoClases) {
+        super(nombre, apellido, email, contrasena);
         this.turnoClases = turnoClases;
-        this.cursos = cursos;
     }
 
     public Horario getTurnoClases() {

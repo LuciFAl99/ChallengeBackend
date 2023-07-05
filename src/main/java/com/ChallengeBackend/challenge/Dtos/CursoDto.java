@@ -1,11 +1,10 @@
 package com.ChallengeBackend.challenge.Dtos;
 
 import com.ChallengeBackend.challenge.Entidades.Curso;
-import com.ChallengeBackend.challenge.Entidades.Horario;
+import com.ChallengeBackend.challenge.Entidades.Enums.Horario;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CursoDto{

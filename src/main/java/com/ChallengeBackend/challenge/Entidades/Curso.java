@@ -1,5 +1,9 @@
 package com.ChallengeBackend.challenge.Entidades;
 
+import com.ChallengeBackend.challenge.Entidades.Enums.Horario;
+import com.ChallengeBackend.challenge.Entidades.Subclases.Administrador;
+import com.ChallengeBackend.challenge.Entidades.Subclases.Alumno;
+import com.ChallengeBackend.challenge.Entidades.Subclases.Profesor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

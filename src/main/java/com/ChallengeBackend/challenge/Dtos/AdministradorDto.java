@@ -1,37 +1,37 @@
 package com.ChallengeBackend.challenge.Dtos;
 
-import com.ChallengeBackend.challenge.Entidades.Administrador;
-import com.ChallengeBackend.challenge.Entidades.Persona;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.ChallengeBackend.challenge.Entidades.Subclases.Administrador;
 
-public class AdministradorDto extends Persona {
-    private List<CursoDto> cursos;
-    private List<AlumnoDto> alumnos;
-    private List<ProfesorDto>profesores;
+public class AdministradorDto {
+    private Long id;
+    private String nombre, apellido, email, contrasena;
+
     public AdministradorDto(Administrador administrador){
-        super(administrador.getNombre(), administrador.getApellido(), administrador.getEmail(), administrador.getContrasena(), administrador.getImagen());
-        this.cursos =  administrador.getCursos()
-                .stream()
-                .map(curso -> new CursoDto(curso)).collect(Collectors.toList());
-        this.alumnos = administrador.getAlumnos()
-                .stream()
-                .map(alumno -> new AlumnoDto(alumno)).collect(Collectors.toList());
-        this.profesores = administrador.getProfesores()
-                .stream()
-                .map(profesor -> new ProfesorDto(profesor)).collect(Collectors.toList());
+        this.id = administrador.getId();
+        this.nombre = administrador.getNombre();
+        this.apellido = administrador.getApellido();
+        this.email = administrador.getEmail();
+        this.contrasena = administrador.getContrasena();
     }
 
-    public List<CursoDto> getCursos() {
-        return cursos;
+    public Long getId() {
+        return id;
     }
 
-    public List<AlumnoDto> getAlumnos() {
-        return alumnos;
+    public String getNombre() {
+        return nombre;
     }
 
-    public List<ProfesorDto> getProfesores() {
-        return profesores;
+    public String getApellido() {
+        return apellido;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getContrasena() {
+        return contrasena;
     }
 }
