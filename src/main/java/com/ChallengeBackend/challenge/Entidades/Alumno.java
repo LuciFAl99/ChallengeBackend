@@ -1,6 +1,5 @@
 package com.ChallengeBackend.challenge.Entidades;
 
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -19,9 +18,8 @@ public class Alumno extends Persona{
     @ManyToOne(fetch = FetchType.EAGER)
     private Administrador administrador;
 
-    public Alumno(String nombre, String apellido, String email, String contrasena, String imagen, Set<Curso> cursos, EstadoAcademico estadoAcademico) {
+    public Alumno(String nombre, String apellido, String email, String contrasena, String imagen, EstadoAcademico estadoAcademico) {
         super(nombre, apellido, email, contrasena, imagen);
-        this.cursos = cursos;
         this.estadoAcademico = estadoAcademico;
     }
 
