@@ -1,4 +1,4 @@
-package com.ChallengeBackend.QuintoImpacto;
+package com.ChallengeBackend.challenge;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
