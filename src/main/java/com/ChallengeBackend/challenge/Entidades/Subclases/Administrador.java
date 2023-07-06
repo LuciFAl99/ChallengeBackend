@@ -7,8 +7,13 @@ import javax.persistence.Entity;
 @Entity
 public class Administrador extends Persona {
 
-    public Administrador(String nombre, String apellido, String email, String contrasena, String imagen) {
-        super(nombre, apellido, email, contrasena, imagen);
+    public Administrador(String nombre, String apellido, String email, String contrasena) {
+        super(nombre, apellido, email, contrasena);
     }
 
+    @Override
+    public String toString() {
+        return "Administrador{"+
+                super.toString()+ '}';
+    }
 }

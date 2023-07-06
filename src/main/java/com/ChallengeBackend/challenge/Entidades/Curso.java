@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,17 +20,17 @@ public class Curso {
     @GenericGenerator(name = "native", strategy = "native")
     private long Id;
     private String nombreCurso;
+    @Column(length = 4000)
     private String descripcion;
     private Horario horario;
     private boolean presencial;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private int cupos;
-    private List<String> materias;
+    @ElementCollection
+    private List<String> materias = new ArrayList<>();
     @ManyToOne(fetch = FetchType.EAGER)
     private Profesor profesor;
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Administrador administrador;
     @ManyToMany(mappedBy = "cursos", fetch = FetchType.EAGER)
     private Set <Alumno> alumnos = new HashSet<>();
 
@@ -125,14 +126,6 @@ public class Curso {
 
     public void setProfesor(Profesor profesor) {
         this.profesor = profesor;
-    }
-
-    public Administrador getAdministrador() {
-        return administrador;
-    }
-
-    public void setAdministrador(Administrador administrador) {
-        this.administrador = administrador;
     }
 
     public Set<Alumno> getAlumnos() {

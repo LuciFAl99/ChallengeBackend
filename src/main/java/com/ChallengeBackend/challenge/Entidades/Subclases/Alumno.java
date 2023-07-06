@@ -19,10 +19,10 @@ public class Alumno extends Persona {
     )
     private Set<Curso> cursos = new HashSet<>();
     private EstadoAcademico estadoAcademico;
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Administrador administrador;
 
-    public Alumno(String nombre, String apellido, String email, String contrasena, String imagen, EstadoAcademico estadoAcademico) {
+    public Alumno(){}
+
+    public Alumno(String nombre, String apellido, String email, String contrasena, EstadoAcademico estadoAcademico) {
         super(nombre, apellido, email, contrasena);
         this.estadoAcademico = estadoAcademico;
     }
@@ -43,16 +43,16 @@ public class Alumno extends Persona {
         this.estadoAcademico = estadoAcademico;
     }
 
-    public Administrador getAdministrador() {
-        return administrador;
-    }
-
-    public void setAdministrador(Administrador administrador) {
-        this.administrador = administrador;
-    }
-
     public void inscribirCurso(Curso curso){
         cursos.add(curso);
         curso.getAlumnos().add(this);
+    }
+
+    @Override
+    public String toString() {
+        return "Alumno{" +
+                super.toString()+
+                "estadoAcademico=" + estadoAcademico +
+                '}';
     }
 }

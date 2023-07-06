@@ -14,8 +14,6 @@ import java.util.Set;
 @Entity
 public class Profesor extends Persona {
     private Horario turnoClases;
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Administrador administrador;
     @OneToMany(mappedBy="profesor", fetch= FetchType.EAGER)
     private Set<Curso> cursos = new HashSet<>();
 
@@ -33,14 +31,6 @@ public class Profesor extends Persona {
         this.turnoClases = turnoClases;
     }
 
-    public Administrador getAdministrador() {
-        return administrador;
-    }
-
-    public void setAdministrador(Administrador administrador) {
-        this.administrador = administrador;
-    }
-
     public Set<Curso> getCursos() {
         return cursos;
     }
@@ -51,5 +41,13 @@ public class Profesor extends Persona {
     public void dictarCurso(Curso curso){
         curso.setProfesor(this);
         cursos.add(curso);
+    }
+
+    @Override
+    public String toString() {
+        return "Profesor{" +
+                super.toString()+
+                "turnoClases=" + turnoClases +
+                '}';
     }
 }
