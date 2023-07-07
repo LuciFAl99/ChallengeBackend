@@ -24,6 +24,7 @@ class Autorizacion {
         http.cors().and().authorizeRequests()
                         .antMatchers("/api/profesores", "/h2-console/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/api/cursos").hasAuthority("ADMIN")
+                        .antMatchers(HttpMethod.PATCH, "/api/profesores/{id}").hasAuthority("ADMIN")
                         .antMatchers(HttpMethod.DELETE, "/api/profesores/{id}", "/api/alumnos/{id}", "/api/cursos/{id}").hasAuthority("ADMIN")
                         .antMatchers("/api/alumnos").hasAnyAuthority("ADMIN", "PROFESOR")
                         .antMatchers("/api/cursos").permitAll()
