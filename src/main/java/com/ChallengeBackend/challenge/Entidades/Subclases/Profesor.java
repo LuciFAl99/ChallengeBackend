@@ -17,8 +17,8 @@ public class Profesor extends Persona {
     @OneToMany(mappedBy="profesor", fetch= FetchType.EAGER)
     private Set<Curso> cursos = new HashSet<>();
 
-
-    public Profesor(String nombre, String apellido, String email, String contrasena, String imagen, Horario turnoClases) {
+    public Profesor(){}
+    public Profesor(String nombre, String apellido, String email, String contrasena, Horario turnoClases) {
         super(nombre, apellido, email, contrasena);
         this.turnoClases = turnoClases;
     }

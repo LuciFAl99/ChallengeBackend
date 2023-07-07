@@ -46,6 +46,7 @@ public class Alumno extends Persona {
     public void inscribirCurso(Curso curso){
         cursos.add(curso);
         curso.getAlumnos().add(this);
+        estadoAcademico = EstadoAcademico.ACTIVO;
     }
 
     @Override

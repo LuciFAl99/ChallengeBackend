@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CursoDto{
-    private long Id;
+    private long id;
     private String nombreCurso;
     private String descripcion;
     private Horario horario;
@@ -16,12 +16,13 @@ public class CursoDto{
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private int cupos;
+    private String imagen;
     private List<String> materias;
-    private List<AlumnoDto> alumnos;
 
     public CursoDto() {
     }
     public CursoDto(Curso curso){
+        this.id = curso.getId();
         this.nombreCurso = curso.getNombreCurso();
         this.descripcion = curso.getDescripcion();
         this.horario = curso.getHorario();
@@ -29,15 +30,12 @@ public class CursoDto{
         this.fechaInicio = curso.getFechaInicio();
         this.fechaFin = curso.getFechaFin();
         this.cupos = curso.getCupos();
+        this.imagen = curso.getImagen();
         this.materias = curso.getMaterias();
-        this.alumnos = curso.getAlumnos()
-                .stream()
-                .map(alumno -> new AlumnoDto(alumno))
-                .collect(Collectors.toList());
     }
 
     public long getId() {
-        return Id;
+        return id;
     }
 
     public String getNombreCurso() {
@@ -67,6 +65,11 @@ public class CursoDto{
     public int getCupos() {
         return cupos;
     }
+
+    public String getImagen() {
+        return imagen;
+    }
+
 
     public List<String> getMaterias() {
         return materias;

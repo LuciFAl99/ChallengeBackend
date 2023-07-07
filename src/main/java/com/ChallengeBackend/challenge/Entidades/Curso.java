@@ -27,6 +27,7 @@ public class Curso {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private int cupos;
+    private String imagen;
     @ElementCollection
     private List<String> materias = new ArrayList<>();
     @ManyToOne(fetch = FetchType.EAGER)
@@ -37,7 +38,7 @@ public class Curso {
     public Curso() {
     }
 
-    public Curso(String nombreCurso, String descripcion, Horario horario, boolean presencial, LocalDate fechaInicio, LocalDate fechaFin, int cupos, List<String> materias) {
+    public Curso(String nombreCurso, String descripcion, Horario horario, boolean presencial, LocalDate fechaInicio, LocalDate fechaFin, int cupos, String imagen, List<String> materias) {
         this.nombreCurso = nombreCurso;
         this.descripcion = descripcion;
         this.horario = horario;
@@ -45,6 +46,7 @@ public class Curso {
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
         this.cupos = cupos;
+        this.imagen = imagen;
         this.materias = materias;
     }
 
@@ -110,6 +112,14 @@ public class Curso {
 
     public void setCupos(int cupos) {
         this.cupos = cupos;
+    }
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
 
     public List<String> getMaterias() {
