@@ -18,10 +18,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -52,7 +53,7 @@ public class AdministradorControlador {
     }
 
     @PostMapping("/api/cursos")
-    public ResponseEntity<Object> crearProfesor(@RequestBody Curso curso, @RequestParam Long profesorId) {
+    public ResponseEntity<Object> crearCursos(@RequestBody Curso curso, @RequestParam Long profesorId) {
         StringBuilder errorMessage = new StringBuilder();
         if (curso.getNombreCurso().isEmpty()) {
             errorMessage.append("Nombre es requerido");
@@ -202,6 +203,7 @@ public class AdministradorControlador {
                         mensaje.append(", ");
                     }
                 }
+                profesorRepositorio.save(profesorExistente);
                 return new ResponseEntity<>(mensaje.toString(), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("No se encontraron propiedades para modificar", HttpStatus.BAD_REQUEST);
@@ -270,6 +272,7 @@ public class AdministradorControlador {
                         mensaje.append(", ");
                     }
                 }
+                alumnoRepositorio.save(alumnoExistente);
                 return new ResponseEntity<>(mensaje.toString(), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("No se encontraron propiedades para modificar", HttpStatus.BAD_REQUEST);
@@ -278,7 +281,121 @@ public class AdministradorControlador {
             return new ResponseEntity<>("Profesor no encontrado", HttpStatus.NOT_FOUND);
         }
     }
+    @PatchMapping("/api/cursos/{id}")
+    public ResponseEntity<Object> modificarPropiedadCurso(@PathVariable Long id, @RequestBody Map<String, Object> cambios) {
+        Optional<Curso> optionalCurso = cursoRepositorio.findById(id);
+        if (optionalCurso.isPresent()) {
+            Curso cursoExistente = optionalCurso.get();
+            List<String> propiedadesModificadas = new ArrayList<>();
 
+            cambios.forEach((propiedad, valor) -> {
+                switch (propiedad) {
+                    case "nombreCurso":
+                        if (valor instanceof String && !((String) valor).isBlank()) {
+                            cursoExistente.setNombreCurso((String) valor);
+                            propiedadesModificadas.add("Nombre del curso");
+                        }
+                        break;
+                    case "descripcion":
+                        if (valor instanceof String && !((String) valor).isBlank()) {
+                            cursoExistente.setDescripcion((String) valor);
+                            propiedadesModificadas.add("Descripción");
+                        }
+                        break;
+                    case "horario":
+                        if (valor instanceof String && !((String) valor).isBlank()) {
+                            try {
+                                Horario nuevoHorario = Horario.valueOf((String) valor);
+                                cursoExistente.setHorario(nuevoHorario);
+                                propiedadesModificadas.add("Horario");
+                            } catch (IllegalArgumentException e) {
+                                ResponseEntity.badRequest().body("El valor para 'horario' no es válido");
+                            }
+                        }
+                        break;
+                    case "presencial":
+                        if (valor instanceof Boolean) {
+                            cursoExistente.setPresencial((Boolean) valor);
+                            propiedadesModificadas.add("Presencial");
+                        }
+                        break;
+                    case "fechaInicio":
+                        if (valor instanceof String && !((String) valor).isBlank()) {
+                            try {
+                                LocalDate fechaInicio = LocalDate.parse((String) valor);
+                                cursoExistente.setFechaInicio(fechaInicio);
+                                propiedadesModificadas.add("Fecha de inicio");
+                            } catch (DateTimeParseException e) {
+                                ResponseEntity.badRequest().body("El formato de fecha para 'fechaInicio' es inválido");
+                            }
+                        }
+                        break;
+                    case "fechaFin":
+                        if (valor instanceof String && !((String) valor).isBlank()) {
+                            try {
+                                LocalDate fechaFin = LocalDate.parse((String) valor);
+                                cursoExistente.setFechaFin(fechaFin);
+                                propiedadesModificadas.add("Fecha de fin");
+                            } catch (DateTimeParseException e) {
+                                ResponseEntity.badRequest().body("El formato de fecha para 'fechaFin' es inválido");
+                            }
+                        }
+                        break;
+                    case "cupos":
+                        if (valor instanceof Integer) {
+                            cursoExistente.setCupos((int) valor);
+                            propiedadesModificadas.add("Cupos");
+                        }
+                        break;
+                    case "imagen":
+                        if (valor instanceof String && !((String) valor).isBlank()) {
+                            cursoExistente.setImagen((String) valor);
+                            propiedadesModificadas.add("Imagen");
+                        }
+                        break;
+                    case "materias":
+                        if (valor instanceof List<?>) {
+                            List<String> nuevasMaterias = (List<String>) valor;
+                            for (String materia : nuevasMaterias) {
+                                if (!cursoExistente.getMaterias().contains(materia)) {
+                                    cursoExistente.getMaterias().add(materia);
+                                    propiedadesModificadas.add("Materia agregada: " + materia);
+                                }
+                            }
+                        }
+                        break;
+                    case "materiasEliminar":
+                        if (valor instanceof List<?>) {
+                            List<String> materiasEliminar = (List<String>) valor;
+                            List<String> materiasExistentes = cursoExistente.getMaterias();
+                            for (String materia : materiasEliminar) {
+                                if (materiasExistentes.contains(materia)) {
+                                    materiasExistentes.remove(materia);
+                                    propiedadesModificadas.add("Materia eliminada: " + materia);
+                                } else {
+                                    materiasExistentes.add(materia);
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        ResponseEntity.badRequest().body("Propiedad no válida: " + propiedad);
+                }
+            });
+
+            if (propiedadesModificadas.isEmpty()) {
+                return ResponseEntity.badRequest().body("No se encontraron propiedades para modificar");
+            }
+
+            StringBuilder mensaje = new StringBuilder();
+            mensaje.append("Modificado correctamente: ");
+            mensaje.append(String.join(", ", propiedadesModificadas));
+            cursoRepositorio.save(cursoExistente);
+            return ResponseEntity.ok().body(mensaje.toString());
+        } else {
+            return new ResponseEntity<>("Curso no encontrado", HttpStatus.NOT_FOUND);
+        }
+    }
 }
 
 
