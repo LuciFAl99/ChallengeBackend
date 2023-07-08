@@ -2,6 +2,7 @@ package com.ChallengeBackend.challenge.Dtos;
 
 import com.ChallengeBackend.challenge.Entidades.Curso;
 import com.ChallengeBackend.challenge.Entidades.Enums.Horario;
+import com.ChallengeBackend.challenge.Entidades.Subclases.Profesor;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,6 +19,7 @@ public class CursoDto{
     private int cupos;
     private String imagen;
     private List<String> materias;
+    private Profesor profesor;
 
     public CursoDto() {
     }
@@ -31,7 +33,7 @@ public class CursoDto{
         this.fechaFin = curso.getFechaFin();
         this.cupos = curso.getCupos();
         this.imagen = curso.getImagen();
-        this.materias = curso.getMaterias();
+        this.profesor = curso.getProfesor();
     }
 
     public long getId() {
@@ -70,8 +72,11 @@ public class CursoDto{
         return imagen;
     }
 
-
     public List<String> getMaterias() {
         return materias;
+    }
+
+    public Profesor getProfesor() {
+        return profesor;
     }
 }

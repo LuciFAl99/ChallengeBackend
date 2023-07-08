@@ -24,12 +24,6 @@ public class Autenticacion extends GlobalAuthenticationConfigurerAdapter {
 
     @Autowired
     private PersonaRepositorio personaRepositorio;
-    @Autowired
-    private AdministradorRepositorio administradorRepositorio;
-    @Autowired
-    private AlumnoRepositorio alumnoRepositorio;
-    @Autowired
-    private ProfesorRepositorio profesorRepositorio;
 
     @Override
     public void init(AuthenticationManagerBuilder auth) throws Exception {

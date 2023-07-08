@@ -10,6 +10,7 @@ import com.ChallengeBackend.challenge.Entidades.Subclases.Alumno;
 import com.ChallengeBackend.challenge.Entidades.Subclases.Profesor;
 import com.ChallengeBackend.challenge.Repositorios.AlumnoRepositorio;
 import com.ChallengeBackend.challenge.Repositorios.CursoRepositorio;
+import com.ChallengeBackend.challenge.Repositorios.PersonaRepositorio;
 import com.ChallengeBackend.challenge.Repositorios.ProfesorRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,8 @@ public class AdministradorControlador {
     @Autowired
     CursoRepositorio cursoRepositorio;
     @Autowired
+    PersonaRepositorio personaRepositorio;
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @GetMapping("/api/alumnos")
@@ -53,42 +56,58 @@ public class AdministradorControlador {
     }
 
     @PostMapping("/api/cursos")
-    public ResponseEntity<Object> crearCursos(@RequestBody Curso curso, @RequestParam Long profesorId) {
+    public ResponseEntity<Object> crearCursos(@RequestBody Curso curso) {
         StringBuilder errorMessage = new StringBuilder();
+
         if (curso.getNombreCurso().isEmpty()) {
-            errorMessage.append("Nombre es requerido");
-        } else if (curso.getDescripcion().isEmpty()) {
-            errorMessage.append("Descripción es requerido");
-        } else if (curso.getHorario() == null) {
-            errorMessage.append("Horario es requerido");
-        } else if (!curso.isPresencial()) {
-            errorMessage.append("Presencial es requerido");
-        } else if (curso.getFechaInicio() == null) {
-            errorMessage.append("Fecha de inicio es requerido");
-        } else if (curso.getFechaFin() == null) {
-            errorMessage.append("Fecha de fin es requerido");
-        } else if (curso.getCupos() == 0 || curso.getCupos() < 0) {
-            errorMessage.append("Número de cupos es requerido");
-        } else if (curso.getImagen().isEmpty()) {
-            errorMessage.append("Imagen es requerido");
-        } else if (curso.getMaterias().isEmpty()) {
-            errorMessage.append("Materias es requerido");
+            errorMessage.append("Nombre es requerido\n");
         }
+
+        if (curso.getDescripcion().isEmpty()) {
+            errorMessage.append("Descripción es requerida\n");
+        }
+
+        if (curso.getHorario() == null) {
+            errorMessage.append("Horario es requerido\n");
+        }
+
+        if (!Boolean.valueOf(curso.isPresencial()).equals(curso.isPresencial())) {
+            errorMessage.append("Presencial es requerido\n");
+        }
+
+        if (curso.getFechaInicio() == null) {
+            errorMessage.append("Fecha de inicio es requerida\n");
+        }
+
+        if (curso.getFechaFin() == null) {
+            errorMessage.append("Fecha de fin es requerida\n");
+        }
+
+        if (curso.getCupos() == 0 || curso.getCupos() < 0) {
+            errorMessage.append("Número de cupos es requerido\n");
+        }
+
+        if (curso.getImagen().isEmpty()) {
+            errorMessage.append("Imagen es requerida\n");
+        }
+
+        if (curso.getMaterias().isEmpty()) {
+            errorMessage.append("Materias es requerida\n");
+        }
+
         if (errorMessage.length() > 0) {
-            String errorString = errorMessage.toString();
-            return new ResponseEntity<>(errorString, HttpStatus.FORBIDDEN);
-        }
-        Optional<Profesor> optionalProfesor = profesorRepositorio.findById(profesorId);
-        if (optionalProfesor.isPresent()) {
-            Profesor profesor = optionalProfesor.get();
-            curso.setProfesor(profesor);
-            cursoRepositorio.save(curso);
-        } else {
-            return new ResponseEntity<>("Profesor no existe", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(errorMessage.toString(), HttpStatus.FORBIDDEN);
         }
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        Curso cursoExistente = cursoRepositorio.findByNombreCurso(curso.getNombreCurso());
+        if (cursoExistente != null) {
+            return new ResponseEntity<>("El curso ya existe", HttpStatus.BAD_REQUEST);
+        }
 
+        curso.setProfesor(null);
+        cursoRepositorio.save(curso);
+
+        return new ResponseEntity<>("Curso creado correctamente", HttpStatus.CREATED);
     }
 
     @DeleteMapping("/api/profesores/{id}")
@@ -169,7 +188,13 @@ public class AdministradorControlador {
                         break;
                     case "email":
                         if (valor instanceof String && !((String) valor).isBlank()) {
-                            profesorExistente.setEmail((String) valor);
+                            String nuevoEmail = (String) valor;
+
+                            if (personaRepositorio.findByEmail(nuevoEmail) != null) {
+                                return ResponseEntity.badRequest().body("El correo electrónico ya está registrado");
+                            }
+
+                            profesorExistente.setEmail(nuevoEmail);
                             propiedadesModificadas.add("Email");
                         }
                         break;
@@ -238,7 +263,13 @@ public class AdministradorControlador {
                         break;
                     case "email":
                         if (valor instanceof String && !((String) valor).isBlank()) {
-                            alumnoExistente.setEmail((String) valor);
+                            String nuevoEmail = (String) valor;
+
+                            if (personaRepositorio.findByEmail(nuevoEmail) != null) {
+                                return ResponseEntity.badRequest().body("El correo electrónico ya está registrado");
+                            }
+
+                            alumnoExistente.setEmail(nuevoEmail);
                             propiedadesModificadas.add("Email");
                         }
                         break;
@@ -278,7 +309,7 @@ public class AdministradorControlador {
                 return new ResponseEntity<>("No se encontraron propiedades para modificar", HttpStatus.BAD_REQUEST);
             }
         } else {
-            return new ResponseEntity<>("Profesor no encontrado", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Alumno no encontrado", HttpStatus.NOT_FOUND);
         }
     }
     @PatchMapping("/api/cursos/{id}")
@@ -396,6 +427,57 @@ public class AdministradorControlador {
             return new ResponseEntity<>("Curso no encontrado", HttpStatus.NOT_FOUND);
         }
     }
+    @PostMapping("/api/profesores/{profesorId}/inscribir")
+    public ResponseEntity<Object> inscribirProfesorACurso(@PathVariable Long profesorId, @RequestParam Long cursoId) {
+        Optional<Profesor> optionalProfesor = profesorRepositorio.findById(profesorId);
+        if (!optionalProfesor.isPresent()) {
+            return new ResponseEntity<>("Profesor no encontrado", HttpStatus.NOT_FOUND);
+        }
+
+        Optional<Curso> optionalCurso = cursoRepositorio.findById(cursoId);
+        if (!optionalCurso.isPresent()) {
+            return new ResponseEntity<>("Curso no encontrado", HttpStatus.NOT_FOUND);
+        }
+
+        Profesor profesor = optionalProfesor.get();
+        Curso curso = optionalCurso.get();
+
+        if (curso.getProfesor() != null && curso.getProfesor().equals(profesor)) {
+            return new ResponseEntity<>("El profesor ya está inscrito en este curso", HttpStatus.BAD_REQUEST);
+        }
+
+        if (curso.getProfesor() != null) {
+            return new ResponseEntity<>("El curso ya tiene asignado un profesor", HttpStatus.BAD_REQUEST);
+        }
+
+        curso.setProfesor(profesor);
+        cursoRepositorio.save(curso);
+
+        return new ResponseEntity<>("Profesor inscrito exitosamente en el curso", HttpStatus.OK);
+    }
+    @PatchMapping("/api/cursos/{id}/cambiar-profesor")
+    public ResponseEntity<Object> cambiarProfesorCurso(@PathVariable Long id, @RequestParam Long nuevoProfesorId) {
+        Optional<Curso> optionalCurso = cursoRepositorio.findById(id);
+        if (optionalCurso.isPresent()) {
+            Curso cursoExistente = optionalCurso.get();
+
+            Optional<Profesor> optionalNuevoProfesor = profesorRepositorio.findById(nuevoProfesorId);
+            if (optionalNuevoProfesor.isPresent()) {
+                Profesor nuevoProfesor = optionalNuevoProfesor.get();
+
+                cursoExistente.setProfesor(nuevoProfesor);
+                cursoRepositorio.save(cursoExistente);
+
+                return ResponseEntity.ok().body("Profesor del curso cambiado exitosamente");
+            } else {
+                return new ResponseEntity<>("Nuevo profesor no encontrado", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity<>("Curso no encontrado", HttpStatus.NOT_FOUND);
+        }
+    }
+
+
 }
 
 
