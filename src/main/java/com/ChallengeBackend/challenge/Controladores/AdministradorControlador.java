@@ -8,6 +8,7 @@ import com.ChallengeBackend.challenge.Entidades.Enums.EstadoAcademico;
 import com.ChallengeBackend.challenge.Entidades.Enums.Horario;
 import com.ChallengeBackend.challenge.Entidades.Subclases.Alumno;
 import com.ChallengeBackend.challenge.Entidades.Subclases.Profesor;
+import com.ChallengeBackend.challenge.Entidades.Superclase.Persona;
 import com.ChallengeBackend.challenge.Repositorios.AlumnoRepositorio;
 import com.ChallengeBackend.challenge.Repositorios.CursoRepositorio;
 import com.ChallengeBackend.challenge.Repositorios.PersonaRepositorio;
@@ -15,12 +16,10 @@ import com.ChallengeBackend.challenge.Repositorios.ProfesorRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -37,8 +36,9 @@ public class AdministradorControlador {
     CursoRepositorio cursoRepositorio;
     @Autowired
     PersonaRepositorio personaRepositorio;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+  /*  @Autowired
+    private PasswordEncoder passwordEncoder;*/
+
 
     @GetMapping("/api/alumnos")
     public List<AlumnoDto> traerAlumnos() {
@@ -90,6 +90,9 @@ public class AdministradorControlador {
         if (curso.getImagen().isEmpty()) {
             errorMessage.append("Imagen es requerida\n");
         }
+        if (curso.getCategoria().isBlank()) {
+            errorMessage.append("Categoría es requerido\n");
+        }
 
         if (curso.getMaterias().isEmpty()) {
             errorMessage.append("Materias es requerida\n");
@@ -112,22 +115,21 @@ public class AdministradorControlador {
 
     @DeleteMapping("/api/profesores/{id}")
     @Transactional
-    public ResponseEntity<Object> eliminarProfesor(@PathVariable Long id, @RequestParam Long otroProfesorId) {
+    public ResponseEntity<Object> eliminarProfesor(@PathVariable Long id) {
         Optional<Profesor> optionalProfesorAEliminar = profesorRepositorio.findById(id);
-        Optional<Profesor> optionalOtroProfesor = profesorRepositorio.findById(otroProfesorId);
 
-        if (optionalProfesorAEliminar.isPresent() && optionalOtroProfesor.isPresent()) {
+        if (optionalProfesorAEliminar.isPresent()) {
             Profesor profesorAEliminar = optionalProfesorAEliminar.get();
-            Profesor otroProfesor = optionalOtroProfesor.get();
 
-            profesorAEliminar.getCursos().forEach(curso -> curso.setProfesor(otroProfesor));
+            profesorAEliminar.getCursos().forEach(curso -> curso.setProfesor(null));
 
             profesorRepositorio.delete(profesorAEliminar);
             return new ResponseEntity<>("Profesor eliminado correctamente", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Profesor o otro profesor no encontrado", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Profesor no encontrado", HttpStatus.NOT_FOUND);
         }
     }
+
 
     @DeleteMapping("/api/alumnos/{id}")
     public ResponseEntity<Object> eliminarAlumno(@PathVariable Long id) {
@@ -191,7 +193,7 @@ public class AdministradorControlador {
                             String nuevoEmail = (String) valor;
 
                             if (personaRepositorio.findByEmail(nuevoEmail) != null) {
-                                return ResponseEntity.badRequest().body("El correo electrónico ya está registrado");
+                                return new ResponseEntity<>("El correo electrónico ya está registrado", HttpStatus.BAD_REQUEST);
                             }
 
                             profesorExistente.setEmail(nuevoEmail);
@@ -203,15 +205,10 @@ public class AdministradorControlador {
                             if (((String) valor).length() < 8) {
                                 return new ResponseEntity<>("La contraseña debe tener al menos 8 caracteres", HttpStatus.BAD_REQUEST);
                             }
-                            profesorExistente.setContrasena(passwordEncoder.encode((String) valor));
+                            //profesorExistente.setContrasena(passwordEncoder.encode((String) valor));
+                            profesorExistente.setContrasena((String) valor);
+
                             propiedadesModificadas.add("Contraseña");
-                        }
-                        break;
-                    case "turnoClases":
-                        if (valor instanceof String) {
-                            Horario nuevoTurno = Horario.valueOf((String) valor);
-                            profesorExistente.setTurnoClases(nuevoTurno);
-                            propiedadesModificadas.add("Turno de clases");
                         }
                         break;
                     default:
@@ -237,6 +234,7 @@ public class AdministradorControlador {
             return new ResponseEntity<>("Profesor no encontrado", HttpStatus.NOT_FOUND);
         }
     }
+
     @PatchMapping("/api/alumnos/{id}")
     public ResponseEntity<Object> modificarPropiedadAlumno(@PathVariable Long id, @RequestBody Map<String, Object> cambios) {
         Optional<Alumno> optionalAlumno = alumnoRepositorio.findById(id);
@@ -266,7 +264,7 @@ public class AdministradorControlador {
                             String nuevoEmail = (String) valor;
 
                             if (personaRepositorio.findByEmail(nuevoEmail) != null) {
-                                return ResponseEntity.badRequest().body("El correo electrónico ya está registrado");
+                                return new ResponseEntity<>("El correo electrónico ya está registrado", HttpStatus.BAD_REQUEST);
                             }
 
                             alumnoExistente.setEmail(nuevoEmail);
@@ -278,7 +276,8 @@ public class AdministradorControlador {
                             if (((String) valor).length() < 8) {
                                 return new ResponseEntity<>("La contraseña debe tener al menos 8 caracteres", HttpStatus.BAD_REQUEST);
                             }
-                            alumnoExistente.setContrasena(passwordEncoder.encode((String) valor));
+//                            alumnoExistente.setContrasena(passwordEncoder.encode((String) valor));
+                            alumnoExistente.setContrasena((String) valor);
                             propiedadesModificadas.add("Contraseña");
                         }
                         break;
@@ -312,6 +311,7 @@ public class AdministradorControlador {
             return new ResponseEntity<>("Alumno no encontrado", HttpStatus.NOT_FOUND);
         }
     }
+
     @PatchMapping("/api/cursos/{id}")
     public ResponseEntity<Object> modificarPropiedadCurso(@PathVariable Long id, @RequestBody Map<String, Object> cambios) {
         Optional<Curso> optionalCurso = cursoRepositorio.findById(id);
@@ -340,7 +340,7 @@ public class AdministradorControlador {
                                 cursoExistente.setHorario(nuevoHorario);
                                 propiedadesModificadas.add("Horario");
                             } catch (IllegalArgumentException e) {
-                                ResponseEntity.badRequest().body("El valor para 'horario' no es válido");
+                                new ResponseEntity<>("El valor para 'horario' no es válido", HttpStatus.BAD_REQUEST);
                             }
                         }
                         break;
@@ -357,7 +357,7 @@ public class AdministradorControlador {
                                 cursoExistente.setFechaInicio(fechaInicio);
                                 propiedadesModificadas.add("Fecha de inicio");
                             } catch (DateTimeParseException e) {
-                                ResponseEntity.badRequest().body("El formato de fecha para 'fechaInicio' es inválido");
+                                new ResponseEntity<>("El formato de fecha para 'fechaInicio' es inválido", HttpStatus.BAD_REQUEST);
                             }
                         }
                         break;
@@ -368,7 +368,7 @@ public class AdministradorControlador {
                                 cursoExistente.setFechaFin(fechaFin);
                                 propiedadesModificadas.add("Fecha de fin");
                             } catch (DateTimeParseException e) {
-                                ResponseEntity.badRequest().body("El formato de fecha para 'fechaFin' es inválido");
+                                new ResponseEntity<>("El formato de fecha para 'fechaFin' es inválido", HttpStatus.BAD_REQUEST);
                             }
                         }
                         break;
@@ -382,6 +382,12 @@ public class AdministradorControlador {
                         if (valor instanceof String && !((String) valor).isBlank()) {
                             cursoExistente.setImagen((String) valor);
                             propiedadesModificadas.add("Imagen");
+                        }
+                        break;
+                    case "categoria":
+                        if (valor instanceof String && !((String) valor).isBlank()) {
+                            cursoExistente.setCategoria((String) valor);
+                            propiedadesModificadas.add("Categoria");
                         }
                         break;
                     case "materias":
@@ -415,18 +421,19 @@ public class AdministradorControlador {
             });
 
             if (propiedadesModificadas.isEmpty()) {
-                return ResponseEntity.badRequest().body("No se encontraron propiedades para modificar");
+                return new ResponseEntity<>("No se encontraron propiedades para modificar", HttpStatus.BAD_REQUEST);
             }
 
             StringBuilder mensaje = new StringBuilder();
             mensaje.append("Modificado correctamente: ");
             mensaje.append(String.join(", ", propiedadesModificadas));
             cursoRepositorio.save(cursoExistente);
-            return ResponseEntity.ok().body(mensaje.toString());
+            return new ResponseEntity<>(mensaje.toString(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Curso no encontrado", HttpStatus.NOT_FOUND);
         }
     }
+
     @PostMapping("/api/profesores/{profesorId}/inscribir")
     public ResponseEntity<Object> inscribirProfesorACurso(@PathVariable Long profesorId, @RequestParam Long cursoId) {
         Optional<Profesor> optionalProfesor = profesorRepositorio.findById(profesorId);
@@ -455,6 +462,7 @@ public class AdministradorControlador {
 
         return new ResponseEntity<>("Profesor inscrito exitosamente en el curso", HttpStatus.OK);
     }
+
     @PatchMapping("/api/cursos/{id}/cambiar-profesor")
     public ResponseEntity<Object> cambiarProfesorCurso(@PathVariable Long id, @RequestParam Long nuevoProfesorId) {
         Optional<Curso> optionalCurso = cursoRepositorio.findById(id);
@@ -468,7 +476,7 @@ public class AdministradorControlador {
                 cursoExistente.setProfesor(nuevoProfesor);
                 cursoRepositorio.save(cursoExistente);
 
-                return ResponseEntity.ok().body("Profesor del curso cambiado exitosamente");
+                return new ResponseEntity<>("Profesor del curso cambiado exitosamente", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Nuevo profesor no encontrado", HttpStatus.NOT_FOUND);
             }
@@ -476,7 +484,10 @@ public class AdministradorControlador {
             return new ResponseEntity<>("Curso no encontrado", HttpStatus.NOT_FOUND);
         }
     }
-
+    @GetMapping("/api/current")
+    public ResponseEntity<Object> getCurrent(Authentication authentication){
+        return new ResponseEntity<>(authentication.getAuthorities(), HttpStatus.OK);
+    }
 
 }
 

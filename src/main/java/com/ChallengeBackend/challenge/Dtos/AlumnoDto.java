@@ -13,6 +13,7 @@ public class AlumnoDto{
     private List<CursoDto> cursos;
     private EstadoAcademico estadoAcademico;
 
+    public AlumnoDto(){}
     public AlumnoDto(Alumno alumno){
         this.id = alumno.getId();
         this.nombre = alumno.getNombre();

@@ -8,4 +8,5 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 @RepositoryRestResource
 public interface PersonaRepositorio extends JpaRepository<Persona, Long> {
     Persona findByEmail(String email);
+    Persona findByContrasena(String contrasena);
 }

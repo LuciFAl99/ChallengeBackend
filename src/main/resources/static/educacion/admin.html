@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <main id="app">
+        <nav class="navbar navbar-light bg-light">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" class="nav-link" @click="logout">Cerrar Sesión</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="container">
+            <div class="table-container">
+                <h2>Alumnos</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nombre Completo</th>
+                            <th>Correo Electrónico</th>
+                            <th>Estado Académico</th>
+                            <th>Cursos tomados</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="alumno in alumnos" :key="alumno.id">
+                            <td>
+                                <div class="d-flex justify-content-between">
+                                    <button class="btn btn-danger btn-sm" @click="eliminarAlumno(alumno.id)">
+                                        <i class="fas fa-trash fa-sm"></i>
+                                    </button>
+                                    <span class="me-2">{{ alumno.nombre }} {{alumno.apellido}}</span>
+                                </div>
+                            </td>
+                            <td>{{ alumno.email }}</td>
+                            <td>{{ alumno.estadoAcademico }}</td>
+                            <td>
+                                <ul class="list-unstyled">
+                                    <li v-for="curso in alumno.cursos" :key="curso.id">
+                                        {{ curso.nombreCurso }}
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="container">
+            <div class="table-container">
+                <h2>Profesores</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nombre Completo</th>
+                            <th>Correo Electrónico</th>
+                            <th>Cursos que dicta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="profesor in profesores" :key="profesor.id">
+                            <td>
+                                <div class="d-flex justify-content-between">
+                                    <button class="btn btn-danger btn-sm" @click="eliminarProfesor(profesor.id)">
+                                        <i class="fas fa-trash fa-sm"></i>
+                                    </button>
+                                    <span class="me-2">{{ profesor.nombre }} {{profesor.apellido}}</span>
+                                </div>
+                            </td>
+                            <td>{{ profesor.email }}</td>
+                            <td>
+                                <ul class="list-unstyled">
+                                    <li v-for="curso in profesor.cursos" :key="curso.id">
+                                        {{ curso.nombreCurso }}
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        <div class="container">
+            <div class="table-container">
+                <h2>Cursos</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Horario</th>
+                            <th>¿Presencial o remoto?</th>
+                            <th>Fecha de Inicio</th>
+                            <th>Fecha de Fin</th>
+                            <th>Cupos</th>
+                            <th>Categoría</th>
+                            <th>Materias</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="curso in cursos" :key="curso.id">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-danger btn-sm me-2" @click="eliminarCurso(curso.id)">
+                                        <i class="fas fa-trash fa-sm"></i>
+                                    </button>
+                                    <button class="btn btn-primary btn-sm"
+                                        @click="editarPropiedadCurso(curso.id, 'nombreCurso')">
+                                        <i class="fas fa-pencil-alt fa-sm"></i>
+                                    </button>
+                                    <div style="flex-grow: 1;">
+                                        <span>{{ curso.nombreCurso }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-primary btn-sm"
+                                        @click="editarPropiedadCurso(curso.id, 'descripcion')">
+                                        <i class="fas fa-pencil-alt fa-sm"></i>
+                                    </button>
+                                    <div style="flex-grow: 1;">
+                                        <span>{{ curso.descripcion }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-primary btn-sm"
+                                        @click="editarPropiedadCurso(curso.id, 'horario')">
+                                        <i class="fas fa-pencil-alt fa-sm"></i>
+                                    </button>
+                                    <div style="flex-grow: 1;">
+                                        <span>{{ curso.horario }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-primary btn-sm"
+                                        @click="editarPropiedadCurso(curso.id, 'presencial')">
+                                        <i class="fas fa-pencil-alt fa-sm"></i>
+                                    </button>
+                                    <div style="flex-grow: 1;">
+                                        <span>{{ curso.presencial ? 'Presencial' : 'Remoto' }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-primary btn-sm"
+                                        @click="editarPropiedadCurso(curso.id, 'fechaInicio')">
+                                        <i class="fas fa-pencil-alt fa-sm"></i>
+                                    </button>
+                                    <div style="flex-grow: 1;">
+                                        <span>{{ new Date(curso.fechaInicio).toLocaleDateString('es-ES') }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-primary btn-sm"
+                                        @click="editarPropiedadCurso(curso.id, 'fechaFin')">
+                                        <i class="fas fa-pencil-alt fa-sm"></i>
+                                    </button>
+                                    <div style="flex-grow: 1;">
+                                        <span>{{ new Date(curso.fechaFin).toLocaleDateString('es-ES') }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-primary btn-sm"
+                                        @click="editarPropiedadCurso(curso.id, 'cupos')">
+                                        <i class="fas fa-pencil-alt fa-sm"></i>
+                                    </button>
+                                    <div style="flex-grow: 1;">
+                                        <span>{{curso.cupos }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-primary btn-sm"
+                                        @click="editarPropiedadCurso(curso.id, 'categoria')">
+                                        <i class="fas fa-pencil-alt fa-sm"></i>
+                                    </button>
+                                    <div style="flex-grow: 1;">
+                                        <span>{{curso.categoria }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                  <ul class="list-unstyled">
+                                    <li v-for="materia in curso.materias" :key="materia">
+                                      <div class="d-flex align-items-center">
+                                        <button class="btn btn-primary btn-sm mr-2" @click="editarMateria(curso.id, materia)">
+                                          <i class="fas fa-pencil-alt fa-sm"></i>
+                                        </button>
+                                        <button class="btn btn-danger btn-sm ml-2" @click="eliminarMateria(curso.id, materia)">
+                                            <i class="fas fa-trash fa-sm"></i>
+                                          </button>
+                                        <span>{{ materia }}</span>
+                                        
+                                      </div>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </td>
+                                                 
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="container d-flex justify-content-center">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <h2>Crear Curso</h2>
+                        <form @submit.prevent="crearCurso" class="needs-validation" novalidate>
+                            <div class="form-group">
+                                <label for="nombreCurso">Nombre del curso:</label>
+                                <input v-model="nombreCurso" type="text" class="form-control" id="nombreCurso" required>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="descripcion">Descripción:</label>
+                                <textarea v-model="descripcion" class="form-control" id="descripcion"
+                                    required></textarea>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="horario">Horario:</label>
+                                <select v-model="horario" class="form-control">
+                                    <option value="MANANA">Mañana</option>
+                                    <option value="TARDE">Tarde</option>
+                                    <option value="NOCHE">Noche</option>
+                                </select>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <div class="form-check">
+                                <input v-model="presencial" class="form-check-input" type="checkbox" id="presencial">
+                                <label class="form-check-label" for="presencial">Presencial</label>
+                            </div>
+                            <div class="form-group">
+                                <label for="fechaInicio">Fecha de inicio:</label>
+                                <input v-model="fechaInicio" type="date" class="form-control" id="fechaInicio" required>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="fechaFin">Fecha de fin:</label>
+                                <input v-model="fechaFin" type="date" class="form-control" id="fechaFin" required>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cupos">Cupos:</label>
+                                <input v-model="cupos" type="number" class="form-control" id="cupos" required>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="imagen">Imagen:</label>
+                                <input v-model="imagen" type="text" class="form-control" id="imagen" required>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="categoria">Categoría:</label>
+                                <input v-model="categoria" type="text" class="form-control" id="categoria" required>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="materias">Materias:</label>
+                                <input v-model="materias" type="text" class="form-control" id="materias" required>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm">Crear Curso</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <h2>Crear Alumno</h2>
+                        <form @submit.prevent="crearAlumno" class="needs-validation" novalidate>
+                            <div class="form-group">
+                                <label for="nombre">Nombre:</label>
+                                <input v-model="nombre" type="text" class="form-control" id="nombre" required>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="apellido">Apellido:</label>
+                                <input v-model="apellido" type="text" class="form-control" id="apellido" required>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                <input v-model="email" type="email" class="form-control" id="email" required>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="contraseña">Contraseña:</label>
+                                <input v-model="contraseña" type="password" class="form-control" id="contraseña"
+                                    required>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="estadoAcademico">Estado Académico:</label>
+                                <select v-model="estadoAcademico" class="form-control">
+                                    <option value="GRADUADO">Graduado</option>
+                                    <option value="ACTIVO">Activo</option>
+                                    <option value="EN_PAUSA">En pausa</option>
+                                </select>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm">Registrar Alumno</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <h2>Crear Profesor</h2>
+                        <form @submit.prevent="crearProfesor" class="needs-validation" novalidate>
+                            <div class="form-group">
+                                <label for="nombreProfesor">Nombre:</label>
+                                <input v-model="nombreProfesor" type="text" class="form-control" id="nombreProfesor"
+                                    required>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="apellidoProfesor">Apellido:</label>
+                                <input v-model="apellidoProfesor" type="text" class="form-control" id="apellidoProfesor"
+                                    required>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="emailProfesor">Email:</label>
+                                <input v-model="emailProfesor" type="email" class="form-control" id="emailProfesor"
+                                    required>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="contraseñaProfesor">Contraseña:</label>
+                                <input v-model="contraseñaProfesor" type="password" class="form-control"
+                                    id="contraseñaProfesor" required>
+                                <div class="invalid-feedback">Este campo es requerido</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm">Registrar Profesor</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+        <!-- Modal y contenido del modal -->
+
+
+    </main>
+    <script src="https://unpkg.com/vue@3.2.26/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./js/admin.js"></script>
+</body>
+
+</html>

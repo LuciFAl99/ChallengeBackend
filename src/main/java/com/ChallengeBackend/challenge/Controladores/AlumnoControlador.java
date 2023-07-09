@@ -1,21 +1,25 @@
 package com.ChallengeBackend.challenge.Controladores;
 
+import com.ChallengeBackend.challenge.Dtos.AlumnoDto;
+import com.ChallengeBackend.challenge.Dtos.CursoDto;
+import com.ChallengeBackend.challenge.Dtos.ProfesorDto;
 import com.ChallengeBackend.challenge.Entidades.Curso;
 import com.ChallengeBackend.challenge.Entidades.Subclases.Alumno;
+import com.ChallengeBackend.challenge.Entidades.Superclase.Persona;
 import com.ChallengeBackend.challenge.Repositorios.AlumnoRepositorio;
 import com.ChallengeBackend.challenge.Repositorios.CursoRepositorio;
+import com.ChallengeBackend.challenge.Repositorios.PersonaRepositorio;
+import com.ChallengeBackend.challenge.Repositorios.ProfesorRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static java.util.stream.Collectors.toList;
 
 
 @RestController
@@ -25,7 +29,11 @@ public class AlumnoControlador {
     @Autowired
     AlumnoRepositorio alumnoRepositorio;
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    PersonaRepositorio personaRepositorio;
+    @Autowired
+    ProfesorRepositorio profesorRepositorio;
+/*    @Autowired
+    private PasswordEncoder passwordEncoder;*/
 
     @PostMapping("/api/alumnos")
     public ResponseEntity<Object> registro(@RequestBody Alumno alumno) {
@@ -65,11 +73,20 @@ public class AlumnoControlador {
             errorMessage.append("El apellido no puede contener números\n");
         }
 
+        Persona alumnoExistente = personaRepositorio.findByEmail(alumno.getEmail());
+        if (alumnoExistente != null) {
+            errorMessage.append("El correo electrónico ya está registrado\n");
+        }
+        Persona nuevoAlumno = personaRepositorio.findByContrasena(alumno.getContrasena());
+        if(nuevoAlumno != null){
+            errorMessage.append("La contraseña ya existe\n");
+        }
+
         if (errorMessage.length() > 0) {
             return new ResponseEntity<>(errorMessage.toString(), HttpStatus.BAD_REQUEST);
         }
 
-        alumnoRepositorio.save(new Alumno(alumno.getNombre(), alumno.getApellido(), alumno.getEmail(), passwordEncoder.encode(alumno.getContrasena()), alumno.getEstadoAcademico()));
+        alumnoRepositorio.save(new Alumno(alumno.getNombre(), alumno.getApellido(), alumno.getEmail(), alumno.getContrasena(), alumno.getEstadoAcademico()));
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

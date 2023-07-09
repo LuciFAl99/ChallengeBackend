@@ -65,14 +65,4 @@ public class Persona {
         this.contrasena = contrasena;
     }
 
-    @Override
-    public String toString() {
-        return "Persona{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", apellido='" + apellido + '\'' +
-                ", email='" + email + '\'' +
-                ", contrasena='" + contrasena + '\'' +
-                '}';
-    }
 }

@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Entity
 public class Alumno extends Persona {
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "alumno_curso",
             joinColumns = @JoinColumn(name = "alumno_id"),
@@ -49,11 +49,5 @@ public class Alumno extends Persona {
         estadoAcademico = EstadoAcademico.ACTIVO;
     }
 
-    @Override
-    public String toString() {
-        return "Alumno{" +
-                super.toString()+
-                "estadoAcademico=" + estadoAcademico +
-                '}';
-    }
+
 }

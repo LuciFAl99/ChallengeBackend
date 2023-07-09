@@ -1,11 +1,13 @@
 package com.ChallengeBackend.challenge.Controladores;
 
 import com.ChallengeBackend.challenge.Entidades.Subclases.Profesor;
+import com.ChallengeBackend.challenge.Entidades.Superclase.Persona;
+import com.ChallengeBackend.challenge.Repositorios.PersonaRepositorio;
 import com.ChallengeBackend.challenge.Repositorios.ProfesorRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +20,9 @@ public class ProfesorControlador {
     @Autowired
     ProfesorRepositorio profesorRepositorio;
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    PersonaRepositorio personaRepositorio;
+  /*  @Autowired
+    private PasswordEncoder passwordEncoder;*/
 
     @PostMapping("/api/profesores")
     public ResponseEntity<Object> registro(@RequestBody Profesor profesor) {
@@ -35,19 +39,23 @@ public class ProfesorControlador {
         if (profesor.getEmail().isBlank()) {
             errorMessage.append("Email es requerido\n");
         } else if (profesor.getEmail().contains("@gmail")) {
-            errorMessage.append("No puedes registrarte como profesor\n");
+            errorMessage.append("No puedes registrarte como alumno\n");
         } else if (profesor.getEmail().contains("@admin")) {
             errorMessage.append("No puedes registrarte como administrador\n");
+        }
+        Persona profesorExistente = personaRepositorio.findByEmail(profesor.getEmail());
+        if(profesorExistente != null) {
+            errorMessage.append("El correo electrónico ya está registrado\n");
+        }
+        Persona nuevoProfesor = personaRepositorio.findByContrasena(profesor.getContrasena());
+            if(nuevoProfesor != null){
+                errorMessage.append("La contraseña ya existe\n");
         }
 
         if (profesor.getContrasena().isBlank()) {
             errorMessage.append("Contraseña es requerida\n");
         } else if (profesor.getContrasena().length() < 8) {
             errorMessage.append("La contraseña debe tener al menos 8 caracteres\n");
-        }
-
-        if (profesor.getTurnoClases() == null) {
-            errorMessage.append("Turno de clases es requerido\n");
         }
 
         if (profesor.getNombre().matches(".*\\d.*")) {
@@ -62,7 +70,7 @@ public class ProfesorControlador {
             return new ResponseEntity<>(errorMessage.toString(), HttpStatus.BAD_REQUEST);
         }
 
-        profesorRepositorio.save(new Profesor(profesor.getNombre(), profesor.getApellido(), profesor.getEmail(), passwordEncoder.encode(profesor.getContrasena()), profesor.getTurnoClases()));
+        profesorRepositorio.save(new Profesor(profesor.getNombre(), profesor.getApellido(), profesor.getEmail(), profesor.getContrasena()));
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

@@ -1,7 +1,5 @@
 package com.ChallengeBackend.challenge.Configuraciones;
 
-
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,20 +19,25 @@ class Autorizacion {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.cors().and().authorizeRequests()
-                        .antMatchers("/api/profesores", "/h2-console/**").permitAll()
-                        .antMatchers(HttpMethod.POST, "/api/cursos", "/api/cursos/{id}/materias", "/api/profesores/{profesorId}/inscribir").hasAuthority("ADMIN")
-                        .antMatchers(HttpMethod.PATCH,  "/api/cursos/{id}", "/api/cursos/{id}/cambiar-profesor").hasAuthority("ADMIN")
-                        .antMatchers(HttpMethod.PATCH,"/api/profesores/{id}").hasAnyAuthority("PROFESOR", "ADMIN")
-                        .antMatchers(HttpMethod.PATCH,  "/api/alumnos/{id}").hasAnyAuthority("ALUMNO", "ADMIN")
-                        .antMatchers(HttpMethod.DELETE, "/api/profesores/{id}", "/api/alumnos/{id}", "/api/cursos/{id}").hasAuthority("ADMIN")
-                        .antMatchers("/api/alumnos").hasAnyAuthority("ADMIN", "PROFESOR")
-                        .antMatchers("/api/cursos").permitAll()
-                        .antMatchers(HttpMethod.POST, "/api/alumnos/inscribirse").hasAnyAuthority("ALUMNO", "ADMIN")
-                        .antMatchers(HttpMethod.POST ,"/api/login", "/api/logout").permitAll()
-                        .antMatchers(HttpMethod.POST,"/api/alumnos").permitAll()
-                        .antMatchers(HttpMethod.POST, "/api/profesores").permitAll()
-                        .anyRequest().denyAll();
+        http.authorizeRequests()
+                .antMatchers("/educacion/index.html", "/educacion/css/**", "/educacion/js/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/login", "/api/logout").permitAll()
+                .antMatchers("/api/profesores", "/h2-console/**").hasAuthority("ADMIN")
+                .antMatchers("/api/cursos").hasAnyAuthority("ADMIN", "ALUMNO", "PROFESOR")
+                .antMatchers(HttpMethod.POST, "/api/alumnos").hasAnyAuthority("ADMIN", "ALUMNO")
+                .antMatchers(HttpMethod.POST, "/api/profesores").hasAnyAuthority("ADMIN", "PROFESOR")
+                .antMatchers("/educacion/alumno.html").hasAnyAuthority("ALUMNO", "ADMIN")
+                .antMatchers("/educacion/profesor.html").hasAnyAuthority("ALUMNO", "ADMIN")
+                .antMatchers("/educacion/admin.html").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/cursos", "/api/cursos/{id}/materias", "/api/profesores/{profesorId}/inscribir").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/api/cursos/{id}", "/api/cursos/{id}/cambiar-profesor").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/api/profesores/{id}").hasAnyAuthority("PROFESOR", "ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/api/alumnos/{id}").hasAnyAuthority("ALUMNO", "ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/profesores/{id}", "/api/alumnos/{id}", "/api/cursos/{id}").hasAuthority("ADMIN")
+                .antMatchers("/api/alumnos").hasAnyAuthority("ADMIN", "PROFESOR")
+                .antMatchers(HttpMethod.POST, "/api/alumnos/inscribirse").hasAnyAuthority("ALUMNO", "ADMIN")
+
+                .anyRequest().denyAll();
 
 
         http.formLogin()
@@ -44,7 +47,6 @@ class Autorizacion {
                 .passwordParameter("contrasena")
 
                 .loginPage("/api/login");
-
 
 
         http.logout().logoutUrl("/api/logout").deleteCookies("JSESSIONID");

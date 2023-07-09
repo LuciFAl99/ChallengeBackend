@@ -11,9 +11,5 @@ public class Administrador extends Persona {
         super(nombre, apellido, email, contrasena);
     }
 
-    @Override
-    public String toString() {
-        return "Administrador{"+
-                super.toString()+ '}';
-    }
+
 }

@@ -7,6 +7,7 @@ public class AdministradorDto {
     private Long id;
     private String nombre, apellido, email, contrasena;
 
+    public AdministradorDto(){}
     public AdministradorDto(Administrador administrador){
         this.id = administrador.getId();
         this.nombre = administrador.getNombre();

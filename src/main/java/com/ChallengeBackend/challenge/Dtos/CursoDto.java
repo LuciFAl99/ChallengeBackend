@@ -18,8 +18,8 @@ public class CursoDto{
     private LocalDate fechaFin;
     private int cupos;
     private String imagen;
+    private String categoria;
     private List<String> materias;
-    private Profesor profesor;
 
     public CursoDto() {
     }
@@ -33,7 +33,8 @@ public class CursoDto{
         this.fechaFin = curso.getFechaFin();
         this.cupos = curso.getCupos();
         this.imagen = curso.getImagen();
-        this.profesor = curso.getProfesor();
+        this.categoria = curso.getCategoria();
+        this.materias = curso.getMaterias();
     }
 
     public long getId() {
@@ -72,11 +73,12 @@ public class CursoDto{
         return imagen;
     }
 
+    public String getCategoria() {
+        return categoria;
+    }
+
     public List<String> getMaterias() {
         return materias;
     }
 
-    public Profesor getProfesor() {
-        return profesor;
-    }
 }
