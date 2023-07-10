@@ -9,7 +9,12 @@ const app = createApp({
       apellido: "",
       postEmail: "",
       postContrasena: "",
-      estadoAcademico: ""
+      estadoAcademico: "",
+      emailProfesor:"",
+      nombreProfesor:"",
+      apellidoProfesor:"",
+      contrasenaProfesor:"",
+      
     }
   },
 
@@ -26,7 +31,7 @@ const app = createApp({
           }
         })
         .catch(error => {
-          let errorMessage = error.response.data;// Supongamos que el mensaje de error se encuentra en la propiedad 'message'
+          let errorMessage = error.response.data;
 
           Swal.fire({
             icon: 'error',
@@ -41,32 +46,61 @@ const app = createApp({
     },
 
     register() {
-      axios.post('/api/alumnos', "nombre=" + this.nombre + "&apellido=" + this.apellido + "&email=" + this.postEmail + "&contrasena=" + this.postContrasena + "&estadoAcademico" + this.estadoAcademico, { headers: { 'content-type': 'application/x-www-form-urlencoded' } })
-        .then(() => {
-          axios.post('/api/login', "email=" + this.postEmail + "&contrasena=" + this.contrasena, { headers: { 'content-type': 'application/x-www-form-urlencoded' } })
-            .then(() => {
-              if (this.postEmail.includes("@profesor")) {
-                window.location.href = "/profesor.html";
-              } else if (this.postEmail.includes("@gmail")) {
-                window.location.href = "/alumno.html";
-              } else {
-                // Redirección predeterminada en caso de otro tipo de email
-                window.location.href = "/index.html";
-              }
-            });
+      const alumnoData = {
+        nombre: this.nombre,
+        apellido: this.apellido,
+        email: this.postEmail,
+        contrasena: this.postContrasena,
+        estadoAcademico: this.estadoAcademico
+
+      }
+      axios.post('/api/alumnos', alumnoData)
+        .then(response => {
+          // Mostrar mensaje de éxito con SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Registrado correctamente',
+            showConfirmButton: false,
+            timer: 1500
+          });
         })
         .catch(error => {
-          let errorMessage = error.response.data;
-          errorMessage = errorMessage.replace(/\n/g, '<br>');
+          let errorMessage = error.response.data;// Supongamos que el mensaje de error se encuentra en la propiedad 'message'
 
           Swal.fire({
             icon: 'error',
             title: 'Error',
-            html: errorMessage,
-            timer: 6000,
+            html: errorMessage.replace(/\n/g, '<br>'),
           });
         });
-    }
+    },
+    registerProfesor() {
+      const profesorData = {
+        nombre: this.nombreProfesor,
+        apellido: this.apellidoProfesor,
+        email: this.emailProfesor,
+        contrasena: this.contraseñaProfesor,
+
+      }
+      axios.post('/api/profesores', profesorData)
+        .then(response => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Profesor creado correctamente',
+            showConfirmButton: false,
+            timer: 1500
+          });
+        })
+        .catch(error => {
+          let errorMessage = error.response.data;
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            html: errorMessage.replace(/\n/g, '<br>'),
+          });
+        });
+    },
 
   },
 })

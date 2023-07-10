@@ -33,14 +33,17 @@ public class Autenticacion extends GlobalAuthenticationConfigurerAdapter {
                         Administrador administrador = persona instanceof Administrador ? ((Administrador) persona) : null;
 
                         if (profesor!=null){
+                            if(profesor.getEmail().contains("@profesor.com"))
                             return new User(profesor.getEmail(), profesor.getContrasena(),
                                     AuthorityUtils.createAuthorityList("PROFESOR"));
                         }
                         if(alumno!=null){
+                            if(alumno.getEmail().contains("@gmail.com"))
                             return new User(alumno.getEmail(),alumno.getContrasena(),
                                     AuthorityUtils.createAuthorityList("ALUMNO"));
                         }
                         if(administrador!=null){
+                            if(administrador.getEmail().equals("admin@admin.com"))
                             return new User(administrador.getEmail(), administrador.getContrasena(),
                                     AuthorityUtils.createAuthorityList("ADMIN"));
                         }

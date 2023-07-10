@@ -28,7 +28,7 @@ public class ChallengeBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ChallengeBackendApplication.class, args);
 	}
-	@Autowired
+	/*@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Bean
 	public CommandLineRunner initData(PersonaRepositorio personaRepositorio, AlumnoRepositorio alumnoRepositorio, ProfesorRepositorio profesorRepositorio, CursoRepositorio cursoRepositorio, AdministradorRepositorio administradorRepositorio) {
@@ -39,11 +39,11 @@ public class ChallengeBackendApplication {
 			String descripcion4 = "Las bases de datos son elementos fundamentales en muchas aplicaciones y sistemas de información. En este curso, aprenderás los conceptos básicos de las bases de datos, incluyendo el diseño, la estructura y la normalización. Explorarás el lenguaje SQL para realizar consultas y actualizaciones en bases de datos relacionales. También obtendrás conocimientos sobre la administración de bases de datos y la optimización del rendimiento. Este curso te proporcionará una base sólida en el manejo de datos y te preparará para trabajar con bases de datos en aplicaciones del mundo real.";
 			String descripcion5 = "Si deseas convertirte en un desarrollador web versátil y capaz de manejar tanto el front-end como el back-end, este curso es ideal para ti. Aprenderás las habilidades necesarias para crear aplicaciones web completas desde cero. En el lado del front-end, adquirirás conocimientos en HTML, CSS y JavaScript para construir interfaces atractivas y dinámicas. En el lado del back-end, explorarás lenguajes y frameworks populares como Node.js, Python Django o Ruby on Rails para crear la lógica y la funcionalidad detrás de las aplicaciones. Además, aprenderás sobre bases de datos, APIs y seguridad, obteniendo una visión completa del desarrollo de aplicaciones web.";
 
-			Curso curso1 = new Curso("Programación en Python", descripcion1, Horario.MANANA, false, LocalDate.of(2023,07,5), LocalDate.of(2023, 11, 5), 20, "kjhu", "Programación",new ArrayList<>(Arrays.asList("Introducción a Python", "Estructuras de control (condicionales y bucles)", "Funciones y modularidad", "Manipulación de datos (listas, diccionarios, tuplas)", "Programación orientada a objetos en Python", "Manipulación de archivos y excepciones", "Introducción a la programación web con Python (opcional)")));
-			Curso curso2 = new Curso("Curso de Desarrollo Web Front-End", descripcion2, Horario.NOCHE, false, LocalDate.of(2023, 5, 12), LocalDate.of(2023, 9, 12), 25, "kjj","Programación",new ArrayList<>(Arrays.asList("HTML y CSS", "Javascript básico", "Diseño responsive y frameworks CSS ", "Manipulación del DOM", "Manipulación de eventos y manejo de formularios", "Introducción a AJAX y consumo de APIs", "Optimización y rendimiento web")));
-			Curso curso3 = new Curso("Curso de Desarrollo de Aplicaciones Móviles", descripcion3, Horario.MANANA, true, LocalDate.of(2023, 2, 1), LocalDate.of(2023, 9, 1), 30, "jkghku", "Programación",new ArrayList<>(Arrays.asList("Introducción al desarrollo móvil y arquitectura de aplicaciones", "Desarrollo nativo (Android con Java/Kotlin o iOS con Swift)", "Fundamentos de diseño de interfaces para aplicaciones móviles", "Acceso a datos y almacenamiento local", "Integración de servicios y notificaciones", "Publicación de aplicaciones en tiendas (Google Play Store, App Store)")));
-			Curso curso4 = new Curso("Curso de Bases de Datos", descripcion4, Horario.TARDE, true, LocalDate.of(2023, 8, 5), LocalDate.of(2024, 1, 5), 40, "jjhjkh","Programación",new ArrayList<>(Arrays.asList("Fundamentos de bases de datos (modelos, estructuras, relaciones)", "Lenguaje SQL (consultas, actualizaciones, creación de tablas y vistas)", "Diseño de bases de datos y normalización", "Administración de bases de datos (respaldo, recuperación, optimización)", "Introducción a bases de datos NoSQL (por ejemplo, MongoDB)", "Integración de bases de datos en aplicaciones")));
-			Curso curso5 = new Curso("Curso de Desarrollo de Aplicaciones Web Full-Stack", descripcion5, Horario.TARDE, false, LocalDate.of(2023, 6, 8), LocalDate.of(2023, 12, 8), 15,"ioio" ,"Programación",new ArrayList<>(Arrays.asList("Desarrollo de aplicaciones web front-end (HTML, CSS, JavaScript)", "Desarrollo de aplicaciones web back-end (con Java)", "Bases de datos y persistencia de datos", "APIs y servicios web", "Seguridad y autenticación en aplicaciones web", "Despliegue y administración de aplicaciones web")));
+			Curso curso1 = new Curso("Programación en Python", descripcion1, Horario.MANANA, false, LocalDate.of(2023,07,5), LocalDate.of(2023, 11, 5), 20, "/educacion/img/python.jpg", "Programación",new ArrayList<>(Arrays.asList("Introducción a Python", "Estructuras de control (condicionales y bucles)", "Funciones y modularidad", "Manipulación de datos (listas, diccionarios, tuplas)", "Programación orientada a objetos en Python", "Manipulación de archivos y excepciones", "Introducción a la programación web con Python (opcional)")));
+			Curso curso2 = new Curso("Curso de Desarrollo Web Front-End", descripcion2, Horario.NOCHE, false, LocalDate.of(2023, 5, 12), LocalDate.of(2023, 9, 12), 25, "/educacion/img/frontend.jpg","Programación",new ArrayList<>(Arrays.asList("HTML y CSS", "Javascript básico", "Diseño responsive y frameworks CSS ", "Manipulación del DOM", "Manipulación de eventos y manejo de formularios", "Introducción a AJAX y consumo de APIs", "Optimización y rendimiento web")));
+			Curso curso3 = new Curso("Curso de Desarrollo de Aplicaciones Móviles", descripcion3, Horario.MANANA, true, LocalDate.of(2023, 2, 1), LocalDate.of(2023, 9, 1), 0, "/educacion/img/mobile.jpg", "Programación",new ArrayList<>(Arrays.asList("Introducción al desarrollo móvil y arquitectura de aplicaciones", "Desarrollo nativo (Android con Java/Kotlin o iOS con Swift)", "Fundamentos de diseño de interfaces para aplicaciones móviles", "Acceso a datos y almacenamiento local", "Integración de servicios y notificaciones", "Publicación de aplicaciones en tiendas (Google Play Store, App Store)")));
+			Curso curso4 = new Curso("Curso de Bases de Datos", descripcion4, Horario.TARDE, true, LocalDate.of(2023, 8, 5), LocalDate.of(2024, 1, 5), 40, "/educacion/img/bbdd.jpg","Programación",new ArrayList<>(Arrays.asList("Fundamentos de bases de datos (modelos, estructuras, relaciones)", "Lenguaje SQL (consultas, actualizaciones, creación de tablas y vistas)", "Diseño de bases de datos y normalización", "Administración de bases de datos (respaldo, recuperación, optimización)", "Introducción a bases de datos NoSQL (por ejemplo, MongoDB)", "Integración de bases de datos en aplicaciones")));
+			Curso curso5 = new Curso("Curso de Desarrollo de Aplicaciones Web Full-Stack", descripcion5, Horario.TARDE, false, LocalDate.of(2023, 6, 8), LocalDate.of(2023, 12, 8), 15,"/educacion/img/fullstack.jpg" ,"Programación",new ArrayList<>(Arrays.asList("Desarrollo de aplicaciones web front-end (HTML, CSS, JavaScript)", "Desarrollo de aplicaciones web back-end (con Java)", "Bases de datos y persistencia de datos", "APIs y servicios web", "Seguridad y autenticación en aplicaciones web", "Despliegue y administración de aplicaciones web")));
 
 			cursoRepositorio.save(curso1);
 			cursoRepositorio.save(curso2);
@@ -54,8 +54,8 @@ public class ChallengeBackendApplication {
 			Alumno alumno1 = new Alumno("Lucila", "Alochis", "lucila@gmail.com", passwordEncoder.encode("Lucila123"), EstadoAcademico.GRADUADO);
 			alumnoRepositorio.save(alumno1);
 
-			Profesor profesor1 = new Profesor("Jorge", "Diaz", "Jorge@profesor.com", "Jorge123");
-			Profesor profesor2 = new Profesor("Carlos", "Lopez", "carlos@profesor.com", "Carlos123");
+			Profesor profesor1 = new Profesor("Jorge", "Diaz", "Jorge@profesor.com", passwordEncoder.encode("Jorge123"));
+			Profesor profesor2 = new Profesor("Carlos", "Lopez", "carlos@profesor.com", passwordEncoder.encode("Carlos123"));
 
 			profesorRepositorio.save(profesor1);
 			profesorRepositorio.save(profesor2);
@@ -92,5 +92,5 @@ public class ChallengeBackendApplication {
 
 			alumnoRepositorio.save(alumno1);
 		};
-	}
+	}*/
 }

@@ -6,7 +6,6 @@ import com.ChallengeBackend.challenge.Entidades.Subclases.Profesor;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CursoDto{
     private long id;
@@ -81,4 +80,7 @@ public class CursoDto{
         return materias;
     }
 
+
 }
+
+

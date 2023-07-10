@@ -11,17 +11,26 @@
 
 <body>
 	<main id="app">
-		<nav class="navbar navbar-light bg-light">
-			<ul class="navbar-nav">
-			  <li class="nav-item">
-				<a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" class="nav-link">Iniciar Sesión</a>
-			  </li>
+		<nav class="navbar navbar-light bg-light d-flex justify-content-between">
+			<div>
+				<img src="./img/logo.jpg" alt="logo" class="logo">
+			</div>
+			<ul class="navbar-nav d-inline">
+				<li class="nav-item">
+					<a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" class="nav-link d-inline-block"
+						style="margin-right: 10px;">Iniciar Sesión</a>
+					<a href="#" data-bs-toggle="modal" data-bs-target="#registroModal" class="nav-link d-inline-block"
+						style="margin-right: 10px;">Registrarse como alumno</a>
+					<a href="#" data-bs-toggle="modal" data-bs-target="#registroProfesor"
+						class="nav-link d-inline-block" style="margin-right: 10px;">Registrarse como profesor</a>
+				</li>
 			</ul>
-		  </nav>
-		  
-		  <!-- Modal y contenido del modal -->
-		  					
-		
+		</nav>
+
+
+		<!-- Modal y contenido del modal -->
+
+
 		<!-- Modal -->
 		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -38,7 +47,8 @@
 							</div>
 							<div class="mb-3">
 								<label for="password" class="form-label">Contraseña:</label>
-								<input type="password" v-model="contrasena" class="form-control" id="contrasena" required>
+								<input type="password" v-model="contrasena" class="form-control" id="contrasena"
+									required>
 							</div>
 							<button @click="login" type="submit" class="btn btn-primary">Iniciar Sesión</button>
 						</form>
@@ -46,8 +56,124 @@
 				</div>
 			</div>
 		</div>
-		
-		
+		<div class="modal fade" id="registroModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title text-primary" id="loginModalLabel">Iniciar Sesión</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form @submit.prevent="register" class="needs-validation" novalidate>
+							<div class="form-group">
+								<label for="nombre">Nombre:</label>
+								<input v-model="nombre" type="text" class="form-control" id="nombre" required>
+								<div class="invalid-feedback">Este campo es requerido</div>
+							</div>
+							<div class="form-group">
+								<label for="apellido">Apellido:</label>
+								<input v-model="apellido" type="text" class="form-control" id="apellido" required>
+								<div class="invalid-feedback">Este campo es requerido</div>
+							</div>
+							<div class="form-group">
+								<label for="postEmail">Email:</label>
+								<input v-model="postEmail" type="email" class="form-control" id="postEmail" required>
+								<div class="invalid-feedback">Este campo es requerido</div>
+							</div>
+							<div class="form-group">
+								<label for="postContrasena">Contraseña:</label>
+								<input v-model="postContrasena" type="password" class="form-control" id="postContrasena"
+									required>
+								<div class="invalid-feedback">Este campo es requerido</div>
+							</div>
+							<div class="form-group">
+								<label for="estadoAcademico">Estado Académico:</label>
+								<select v-model="estadoAcademico" class="form-control">
+									<option value="GRADUADO">Graduado</option>
+									<option value="ACTIVO">Activo</option>
+									<option value="EN_PAUSA">En pausa</option>
+								</select>
+								<div class="invalid-feedback">Este campo es requerido</div>
+							</div>
+							<button type="submit" class="btn btn-primary btn-sm">Registrar Alumno</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="registroProfesor" tabindex="-1" aria-labelledby="loginModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title text-primary" id="loginModalLabel">Registrarse como profesor</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form @submit.prevent="registerProfesor" class="needs-validation" novalidate>
+							<div class="form-group">
+								<label for="nombreProfesor">Nombre:</label>
+								<input v-model="nombreProfesor" type="text" class="form-control" id="nombreProfesor"
+									required>
+								<div class="invalid-feedback">Este campo es requerido</div>
+							</div>
+							<div class="form-group">
+								<label for="apellidoProfesor">Apellido:</label>
+								<input v-model="apellidoProfesor" type="text" class="form-control" id="apellidoProfesor"
+									required>
+								<div class="invalid-feedback">Este campo es requerido</div>
+							</div>
+							<div class="form-group">
+								<label for="emailProfesor">Email:</label>
+								<input v-model="emailProfesor" type="email" class="form-control" id="emailProfesor"
+									required>
+								<div class="invalid-feedback">Este campo es requerido</div>
+							</div>
+							<div class="form-group">
+								<label for="contraseñaProfesor">Contraseña:</label>
+								<input v-model="contraseñaProfesor" type="password" class="form-control"
+									id="contraseñaProfesor" required>
+								<div class="invalid-feedback">Este campo es requerido</div>
+							</div>
+							<button type="submit" class="btn btn-primary btn-sm">Registrar Profesor</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<h1 style="text-align: center;">Bienvenidos a Universidad ABC</h1>
+		<div class="container d-flex justify-content-center">
+			<img src="./img/universidad.jpg" alt="universidad" class="imagen">
+		</div>
+		<div class="container justify-content-center">
+			<p>La Universidad ABC es una institución académica de renombre mundial que se destaca por su excelencia en
+				la educación superior y su compromiso con la investigación innovadora. Fundada hace más de medio siglo,
+				la universidad ha sido pionera en la formación de líderes en una amplia gama de disciplinas, abarcando
+				desde las ciencias y la tecnología hasta las humanidades y las artes.</p>
+
+			<p>Con una facultad altamente calificada y un enfoque centrado en el estudiante, la Universidad ABC ofrece
+				un entorno de aprendizaje dinámico y enriquecedor que fomenta la creatividad, el pensamiento crítico y
+				la colaboración. Nuestros programas académicos de vanguardia están diseñados para preparar a los
+				estudiantes para los desafíos del siglo XXI y brindarles las habilidades y conocimientos necesarios para
+				sobresalir en sus carreras profesionales.</p>
+
+			<p>Además de su compromiso con la excelencia académica, la Universidad ABC se enorgullece de su diversidad y
+				su comunidad inclusiva. Atraemos a estudiantes y académicos de todo el mundo, creando un ambiente
+				multicultural y enriquecedor que fomenta el intercambio de ideas y perspectivas. Nuestros estudiantes se
+				benefician de una amplia gama de oportunidades extracurriculares, como actividades deportivas, clubes
+				estudiantiles, programas de servicio comunitario y experiencias internacionales.</p>
+
+			<p>En la Universidad ABC, nos esforzamos por empoderar a nuestros estudiantes para que se conviertan en
+				agentes de cambio en sus comunidades y en la sociedad en general. Nuestra visión es formar líderes
+				éticos y comprometidos que puedan enfrentar los desafíos globales, promover la justicia social y
+				contribuir al bienestar de la humanidad. Te invitamos a unirte a nuestra comunidad académica y ser parte
+				de esta emocionante aventura de aprendizaje y descubrimiento en la Universidad ABC.</p>
+
+
+			<p>Regístrate para encontrar todos los cursos y ser parte de esta comunidad educativa!!!</p>
+		</div>
+
+
 	</main>
 
 	<script src="https://unpkg.com/vue@3.2.26/dist/vue.global.js"></script>
