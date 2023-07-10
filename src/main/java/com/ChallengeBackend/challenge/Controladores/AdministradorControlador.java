@@ -2,7 +2,6 @@ package com.ChallengeBackend.challenge.Controladores;
 
 import com.ChallengeBackend.challenge.Dtos.AlumnoDto;
 import com.ChallengeBackend.challenge.Dtos.CursoDto;
-import com.ChallengeBackend.challenge.Dtos.OtrosDto.CursoDto2;
 import com.ChallengeBackend.challenge.Dtos.ProfesorDto;
 import com.ChallengeBackend.challenge.Entidades.Curso;
 import com.ChallengeBackend.challenge.Entidades.Enums.EstadoAcademico;
