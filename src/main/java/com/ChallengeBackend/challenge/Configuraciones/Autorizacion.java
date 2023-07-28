@@ -28,7 +28,7 @@ class Autorizacion {
                 .antMatchers("/api/alumnos/inscribirse").hasAuthority("ALUMNO")
                 .antMatchers("/api/profesores/actual").hasAuthority("PROFESOR")
                 .antMatchers("/api/profesores", "/h2-console/**").hasAuthority("ADMIN")
-                .antMatchers("api/cursos/{id}").hasAnyAuthority("ADMIN")
+                .antMatchers("api/cursos/{id}", "/api/cursosProfesorAlumno").hasAnyAuthority("ADMIN")
                 .antMatchers("/api/cursos").permitAll()
                 .antMatchers("/educacion/alumno.html", "/educacion/fichaAlumno.html").hasAnyAuthority("ALUMNO", "ADMIN")
                 .antMatchers("/educacion/profesor.html", "/educacion/fichaProfesor.html", "/api/modificarProfesor/{id}").hasAnyAuthority("PROFESOR", "ADMIN")

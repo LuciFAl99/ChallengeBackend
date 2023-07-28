@@ -1,11 +1,14 @@
 package com.ChallengeBackend.challenge.Dtos;
 
+import com.ChallengeBackend.challenge.Dtos.OtrosDto.AlumnoDto2;
+import com.ChallengeBackend.challenge.Dtos.OtrosDto.ProfesorDto2;
 import com.ChallengeBackend.challenge.Entidades.Curso;
 import com.ChallengeBackend.challenge.Entidades.Enums.Horario;
 import com.ChallengeBackend.challenge.Entidades.Subclases.Profesor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CursoDto{
     private long id;
@@ -19,6 +22,8 @@ public class CursoDto{
     private String imagen;
     private String categoria;
     private List<String> materias;
+    private ProfesorDto2 profesorACargo;
+    private List <AlumnoDto2> alumnosInscriptos;
 
     public CursoDto() {
     }
@@ -34,6 +39,8 @@ public class CursoDto{
         this.imagen = curso.getImagen();
         this.categoria = curso.getCategoria();
         this.materias = curso.getMaterias();
+        this.profesorACargo = new ProfesorDto2(curso.getProfesor());
+        this.alumnosInscriptos = curso.getAlumnos().stream().map(alumno -> new AlumnoDto2(alumno)).collect(Collectors.toList());
     }
 
     public long getId() {
@@ -80,7 +87,13 @@ public class CursoDto{
         return materias;
     }
 
+    public ProfesorDto2 getProfesor() {
+        return profesorACargo;
+    }
 
+    public List<AlumnoDto2> getAlumnos() {
+        return alumnosInscriptos;
+    }
 }
 
 

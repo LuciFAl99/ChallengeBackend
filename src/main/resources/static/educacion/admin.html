@@ -198,6 +198,8 @@
                             <th>Cupos</th>
                             <th>Categoría</th>
                             <th>Materias</th>
+                            <th>Alumnos Inscriptos</th>
+                            <th>Profesor que lo dicta</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -310,6 +312,24 @@
                                             </div>
                                         </li>
                                     </ul>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <ul>
+                                        <li v-for="alumno in curso.alumnos" :key="alumno">
+                                            <div class="d-flex align-items-center">
+                                                <span>{{ alumno.nombre }} {{alumno.apellido}}</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div style="flex-grow: 1;">
+                                        <span>{{curso.profesor.nombre}} {{curso.profesor.apellido}}</span>
+                                    </div>
                                 </div>
                             </td>
 

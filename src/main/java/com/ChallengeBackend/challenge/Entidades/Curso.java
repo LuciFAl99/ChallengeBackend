@@ -1,5 +1,6 @@
 package com.ChallengeBackend.challenge.Entidades;
 
+import com.ChallengeBackend.challenge.Dtos.OtrosDto.ProfesorDto2;
 import com.ChallengeBackend.challenge.Entidades.Enums.Horario;
 import com.ChallengeBackend.challenge.Entidades.Subclases.Administrador;
 import com.ChallengeBackend.challenge.Entidades.Subclases.Alumno;
@@ -156,4 +157,5 @@ public class Curso {
     public void setAlumnos(Set<Alumno> alumnos) {
         this.alumnos = alumnos;
     }
+
 }
