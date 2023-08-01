@@ -9,8 +9,10 @@ public class ProfesorDto2 {
     public ProfesorDto2() {
     }
     public ProfesorDto2(Profesor profesor){
-        this.nombre = profesor.getNombre();
-        this.apellido = profesor.getApellido();
+        if (profesor != null) {
+            this.nombre = profesor.getNombre();
+            this.apellido = profesor.getApellido();
+        }
     }
 
     public String getNombre() {

@@ -9,8 +9,10 @@ public class AlumnoDto2 {
     public AlumnoDto2() {
     }
     public AlumnoDto2(Alumno alumno){
-        this.nombre = alumno.getNombre();
-        this.apellido = alumno.getApellido();
+        if(alumno != null) {
+            this.nombre = alumno.getNombre();
+            this.apellido = alumno.getApellido();
+        }
     }
 
     public String getNombre() {

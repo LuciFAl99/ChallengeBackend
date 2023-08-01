@@ -94,14 +94,15 @@
                             </td>
                             <td>
                                 <ul class="list-unstyled">
-                                  <li v-for="curso in alumno.cursos" :key="curso.id">
-                                    <button class="btn btn-danger btn-sm" @click="eliminarAlumno(curso.id, alumno.id)">
-                                        <i class="fas fa-trash fa-sm"></i>
-                                    </button>
-                                    {{ curso.nombreCurso }}
-                                  </li>
+                                    <li v-for="curso in alumno.cursos" :key="curso.id">
+                                        <button class="btn btn-danger btn-sm"
+                                            @click="eliminarAlumno(curso.id, alumno.id)">
+                                            <i class="fas fa-trash fa-sm"></i>
+                                        </button>
+                                        {{ curso.nombreCurso }}
+                                    </li>
                                 </ul>
-                              </td>                              
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -315,7 +316,7 @@
                                 </div>
                             </td>
                             <td>
-                                <div>
+                                <div v-if="curso.alumnos && curso.alumnos.length > 0">
                                     <ul>
                                         <li v-for="alumno in curso.alumnos" :key="alumno">
                                             <div class="d-flex align-items-center">
@@ -324,15 +325,20 @@
                                         </li>
                                     </ul>
                                 </div>
-                            </td>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div style="flex-grow: 1;">
-                                        <span>{{curso.profesor.nombre}} {{curso.profesor.apellido}}</span>
-                                    </div>
+                                <div v-else>
+                                    <span>No hay alumnos inscriptos.</span>
                                 </div>
                             </td>
-
+                            <td>
+                                <div class="d-flex align-items-center" v-if="curso.profesor == null">
+                                    <div style="flex-grow: 1;">
+                                        <span>No hay profesor asignado.</span>
+                                    </div>
+                                </div>
+                                <div v-else>
+                                    <span>{{ curso.profesor.nombre }} {{ curso.profesor.apellido }}</span>                                                                                            
+                                </div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -538,7 +544,8 @@
                         <div class="form-group">
                             <label for="nuevoProfesorId">Nuevo Profesor:</label>
                             <select class="form-control" id="nuevoProfesorId" v-model="nuevoProfesorId">
-                                <option v-for="profesor in profesores" :value="profesor.id">{{ profesor.nombre }} {{profesor.apellido}}
+                                <option v-for="profesor in profesores" :value="profesor.id">{{ profesor.nombre }}
+                                    {{profesor.apellido}}
                                 </option>
                             </select>
                         </div>
@@ -547,8 +554,8 @@
                 </div>
             </div>
         </div>
-          
-          
+
+
 
 
     </main>
